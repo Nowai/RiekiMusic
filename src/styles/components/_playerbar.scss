@@ -1,0 +1,52 @@
+.playerbar-container {
+    z-index: 9999;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    height: 60px;
+}
+
+.playerbar-center,
+.playerbar-left,
+.playerbar-right {
+    align-self: center;
+}
+
+.playerbar-left,
+.playerbar-right {
+    flex: 0 0 250px;
+    width: 250px;
+    display: flex;
+}
+
+.playerbar-center {
+    flex: 1 0 250px;
+    max-width: 500px;
+    padding-top: 24px;
+}
+
+// ugly hack to fix broken slider color for mui component :(
+.playerbar-center > div > div > div > div:nth-child(1){
+    background-color: black !important;
+}
+
+.playerbar-center > div > div > div > div:nth-child(2){
+    background-color: white !important;
+}
+
+.playerbar-center > div > div > div > div:nth-child(3){
+    background-color: black !important;
+}
+
+
+.playerbar-left {
+    justify-content: flex-end;
+}
+
+.playerbar-right {
+    justify-content: flex-start;
+}
