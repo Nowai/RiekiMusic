@@ -2,11 +2,11 @@
     <h1>Rieki Music</h1>
 </p>
 
-<p align="center">
+<p>
     <a href="https://github.com/Nowai/muimp/blob/master/LICENSE">
        <img src="https://img.shields.io/badge/license-MIT-blue.svg"> 
     </a>
-    <a href="https://github.com/Nowai/muimp/blob/master/LICENSE">
+    <a href="https://github.com/Nowai/RiekiMusic/tree/master/build">
         <img src="https://img.shields.io/badge/build-passing-green.svg"> 
     </a>
     <a href="">
@@ -16,8 +16,8 @@
 
 ### A modern music player interface written in react 
 
-![img1](https://raw.githubusercontent.com/Nowai/muimp/master/imgs/screenshot_1.png)
-![img2](https://raw.githubusercontent.com/Nowai/muimp/master/imgs/screenshot_2.png)
+![img1](https://raw.githubusercontent.com/Nowai/RiekiMusic/master/imgs/screenshot_1.png)
+![img2](https://raw.githubusercontent.com/Nowai/RiekiMusic/master/imgs/screenshot_2.png)
 
 Rieki Music is a modern music player interface inspired by players like spotify and soundcloud. It is build using modern JavaScript utilizing React and howler.js providing a multiplatform user interface to access and play your music locally or from the internet.
 
