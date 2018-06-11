@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 
 // components
-import App from 'App';
+import App from 'views/App';
 
 // material-ui
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import {colors} from 'components/Colors';
 
 // styles
 require('applicationStyles');
@@ -23,7 +24,7 @@ store.subscribe(() => {
 
 ReactDOM.render(
   <Provider store={store}>
-    <MuiThemeProvider muiTheme={getMuiTheme()}>
+    <MuiThemeProvider muiTheme={getMuiTheme(colors)}>
           <App></App>
     </MuiThemeProvider>
   </Provider>,

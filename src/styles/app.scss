@@ -1,9 +1,18 @@
 // normalize-scss
 @import "normalize/import-now";
 
+// colors
+@import "base/_colors.scss";
+
 // components
 @import "base/_base.scss";
 @import "components/_layoutContainer.scss";
 @import "components/_playerbar.scss";
-@import "components/_groupedListView.scss";
 @import "components/_card.scss";
+@import "components/_list.scss";
+@import "components/_body.scss";
+@import "components/_leftMenu.scss";
+@import "components/_card_header.scss";
+@import "components/_block_filler.scss";
+@import "components/_view_toggle.scss";
+@import "components/_player_song_widget.scss";

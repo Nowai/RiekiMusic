@@ -1,13 +1,27 @@
-# muimp
+<p align="center">
+    <h1>Rieki Music</h1>
+</p>
 
-## A modern material design musicplayer interface
+<p align="center">
+    <a href="https://github.com/Nowai/muimp/blob/master/LICENSE">
+       <img src="https://img.shields.io/badge/license-MIT-blue.svg"> 
+    </a>
+    <a href="https://github.com/Nowai/muimp/blob/master/LICENSE">
+        <img src="https://img.shields.io/badge/build-passing-green.svg"> 
+    </a>
+    <a href="">
+        <img src="https://img.shields.io/badge/version-3.0-lightgrey.svg"> 
+    </a>
+</p>
 
-![img1](https://raw.githubusercontent.com/Nowai/muimp/master/imgs/muimp_1.png)
-![img2](https://raw.githubusercontent.com/Nowai/muimp/master/imgs/muimp_2.png)
+### A modern music player interface written in react 
 
-muimp is backend agnostic music player interface based Google's Material Design. It is built with modern JavaScript using React and howler.js providing a multiplatform user interface to access your music locally or from the internet. 
+![img1](https://raw.githubusercontent.com/Nowai/muimp/master/imgs/screenshot_1.png)
+![img2](https://raw.githubusercontent.com/Nowai/muimp/master/imgs/screenshot_2.png)
 
-All muimp requires is a REST server providing it with data. It is easily extendable to support multiple services. 
+Rieki Music is a modern music player interface inspired by players like spotify and soundcloud. It is build using modern JavaScript utilizing React and howler.js providing a multiplatform user interface to access and play your music locally or from the internet.
+
+All Rieki Music requires is a REST server providing it with data, I recommend [jmrs](https://github.com/Nowai/jmrs) which was developed in tandem with Rieki Music but it is also quite easy to adapt the source to a different data provider. 
 
 ## Build
 

@@ -19,21 +19,22 @@ let handleRequest = (state, action) => {
         [action.store]: Object.assign({}, state[action.store], {
            isFetching: true,
            hasError: false,
-           error: '',
-           next_href: '',
+           error: null,
+           next_href: null,
            items: state[action.store] ? state[action.store].items : [] 
         })
     });
 }
 
 let handleSucReceive = (state, action) => {
+    console.log(action);
     return Object.assign({}, state, {
         [action.store]: {
             isFetching: false,
             hasError: false,
-            error: '',
-            next_href: 'http://localhost:8080' + action.next_url,
-            items: state[action.store].items.concat(action.data)//action.data.concat(state[action.store].items)//Object.assign({},state[action.store].items,action.items)
+            error: null,
+            next_href: action.next_href ? action.next_href : null,
+            items: (state[action.store].items && Array.isArray(action.data)) ? state[action.store].items.concat(action.data) : action.data
     }});
 }
 

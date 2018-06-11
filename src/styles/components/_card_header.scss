@@ -1,0 +1,44 @@
+.card-header-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.card-header-card-wrapper {
+    flex-grow: 0;
+}
+
+.card-header-text-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+}
+
+.card-header-text-title {
+    font-size: 2em;
+    font-weight: bold;
+    color: $primary-color-1;
+}
+
+.card-header-text-subtitle {
+    font-size: 1em;
+    color: $primary-color-2;
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: center;
+    align-items: center;
+
+    > p {
+        text-decoration: none;
+    }
+
+    > div {
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+
+    > div:hover {
+       text-decoration: underline; 
+       cursor: pointer;
+    }
+}

@@ -1,0 +1,95 @@
+.list-parent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    border-top: 1px solid $primary-color-3;
+}
+
+.list-child {
+    border-bottom: 1px solid $primary-color-3;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.list-child:hover {
+    background-color: $primary-color-3;
+}
+
+.list-child-active {
+    background-color: $primary-color-3;
+}
+
+.list-child > * {
+    margin-left: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: $primary-color-1;
+}
+
+.list-child > *:last-child {
+    margin-right: 10px;
+}
+
+.list-cover {
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+}
+
+.list-center {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.list-center > *{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+
+.list-left {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.list-right {
+    width: 150px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    flex-shrink: 0;
+    > * {
+        flex-shrink: 0;
+    }
+
+    > p {
+        width: 70px;
+        text-align: center;
+        text-decoration: none;
+        :hover {
+            text-decoration: none;
+        }
+    }
+}
+
+.list-text:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.list-right-filler {
+    width: 48px;
+    height: 48px;
+}

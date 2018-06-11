@@ -1,0 +1,75 @@
+.left-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 170px;
+    height: 100vh;
+    outline: solid 1px $primary-color-3;
+    flex-shrink: 0;
+    flex-basis: auto;
+    align-self: stretch;
+    display: flex;
+    flex-flow: column nowrap;
+    overflow: hidden;
+    background-color: $primary-background-color-1;
+}
+
+.left-menu > * {
+    color: $primary-color-2;
+}
+
+.left-menu-scroll {
+    overflow: auto;
+    overflow-y: hidden;
+}
+
+.left-menu-padding {
+    flex-shrink: 0;
+    height: 40px;
+    content: '';
+}
+
+.left-menu-heading {
+    flex-shrink: 0;
+    padding: 4px 15px 4px 25px;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.left-menu-item {
+    flex-shrink: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    cursor: pointer;
+    //margin: 4px 15px 4px 15px;
+    padding: 4px 15px 4px 15px;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.left-menu-item.highlighted {
+    font-weight: bold;
+    color: $primary-color-1;
+}
+
+.left-menu-item:hover {
+    color: $primary-color-1;
+}
+
+.left-menu-item > i {
+    width: 10px;
+    flex-shrink: 0;
+}
+
+.left-menu-item.highlighted > i {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    margin-right: 4px;
+    background-color: $secondary-color-1;
+}

@@ -1,8 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 
 // actions
-import * as actions from 'actions/playerActions';
+import * as actions from 'actions/PlayerActions';
 
 // mui
 import muiThemeable from 'material-ui/styles/muiThemeable';
@@ -17,32 +18,31 @@ import AvRepeat from 'material-ui/svg-icons/av/repeat';
 import AvVolumeUp from 'material-ui/svg-icons/av/volume-up';
 import AvVolumeDown from 'material-ui/svg-icons/av/volume-down';
 import AvVolumeOff from 'material-ui/svg-icons/av/volume-off';
+import AvQueueMusic from 'material-ui/svg-icons/av/queue-music';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import Popover from 'material-ui/Popover';
 
+// components
+import ReactHowler from 'react-howler';
+import PlayerSongWidget from 'components/PlayerSongWidget';
+import {colors} from 'components/Colors';
 
 export class PlayerBar extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            progress: 0,
-            timer: null
+            progress: 1.0,
+            timer: null,
+            playing: false,
+            open: false,
+            anchorEl: null,
+            volume: 0.5
         }
     }
 
     componentWillReceiveProps = (nextProps) => {
-        if(!this.props.player.isPlaying && nextProps.player.isPlaying) {
-            this.setState(Object.assign({}, this.state, {
-                progress: 0,
-                timer: setInterval(() => { this.setState(Object.assign({}, this.state, {progress: (this.state.progress+1.0)}))}, 1000)
-            }));
-        }
-        if(this.props.player.isPlaying && !nextProps.player.isPlaying) {
-            clearInterval(this.state.timer);
-            this.setState(Object.assign({}, this.state, {
-                progress: 0,
-                timer: null
-            }));
-        }
     }
 
     getStyle = () => {
@@ -56,40 +56,70 @@ export class PlayerBar extends React.Component {
     }
 
     getActiveColor = (b) => {
-        // TODO: fix styling to use global style and not be hardcoded!
-        return b ? 'white' : 'black'
+        return b ? colors.palette.accent1Color : colors.palette.textColor;
     }
 
     getVolumeIcon = () => {
-        if(this.props.volume==0) 
+        if(this.state.volume==0) 
             return <AvVolumeOff/>;
-        else if(this.props.volume<50)
+        else if(this.state.volume<0.5)
             return <AvVolumeDown/>;
         else
             return <AvVolumeUp/>;
     }
 
     getProgress = () => {
-        return this.props.player.howl != null ? (this.state.progress / this.props.player.howl.duration()) * 100.0 : 0.0;
+        if(typeof this.player !== 'undefined') {
+            let progress = (this.state.progress/this.player.duration()) * 100.0 || .1;
+            if(progress > 100) 
+                progress = 100.0;
+            else if(progress < 0)
+                progress = .1;
+            return progress;
+        }
+        return .1;
     }
 
     handlePreviousClick = (e) => {
         e.preventDefault();
-        this.props.dispatch(actions.playPrevious());
+        this.props.dispatch(actions.previous());
     }
     
     handlePlayClick = (e) => {
         e.preventDefault();
-        this.props.dispatch(actions.togglePlay());
+        if(!this.props.player.isPlaying)
+            this.props.dispatch(actions.play());
+        if(this.props.player.isPlaying)
+            this.props.dispatch(actions.pause());
     }
 
     handleNextClick = (e) => {
         e.preventDefault();
-        this.props.dispatch(actions.playNext());
+        this.props.dispatch(actions.next());
     }
 
     handleVolumeClick = (e) => {
         e.preventDefault();
+        if(!this.state.open) {
+            this.setState({
+                open: true,
+                anchorEl: e.currentTarget
+            });
+        } else {
+            this.handleRequestClose();
+        }
+    }
+
+    handleRequestClose = () => {
+        this.setState({
+            open: false
+        });
+    }
+
+    handleVolume = (e, value) => {
+        this.setState({
+            volume: value
+        });
     }
 
     handleShuffleClick = (e) => {
@@ -102,35 +132,99 @@ export class PlayerBar extends React.Component {
         this.props.dispatch(actions.toggleRepeat());
     }
 
+    handlePlay = () => {
+        this.setState(Object.assign({}, this.state, {
+            timer: setInterval(() => { this.setState(Object.assign({}, this.state, {progress: this.player.seek()}))}, 200)
+        }));
+    }
+
+    handlePause = () => {
+        clearInterval(this.state.timer);
+    }
+
+    handleSeek = (event,value) => {
+        if(typeof this.player !== 'undefined') {
+            const seek = (value/100.0) * this.player.duration();
+            this.player.seek(seek);
+        }
+    }
+
+    handleEnd = () => {
+        this.props.dispatch(actions.next());
+    }
+
+    handleQueueClick = (e) => {
+        e.preventDefault();
+        this.props.history.push(`/playing`);
+    }
+
+    getBackEndPlayer = () => {
+        // TODO: use higher-order-component to pick the right backend player (i.e. howler for direct links/ youtube embed etc.)
+        return (<ReactHowler
+            src={this.props.player.currentSong ? this.props.player.currentSong.song_url : 'http://localhost:3000/404'}
+            playing={this.props.player.isPlaying}
+            format={['mp3']}
+            ref={(ref) => this.player = ref}
+            onPlay={() => {this.handlePlay()}}
+            onPause={() => {this.handlePause()}}
+            onEnd={() => {this.handleEnd()}}
+            volume={this.state.volume}
+        >
+        </ReactHowler>);
+    }
+    // <IconButton onClick={this.handleVolumeClick}>{volumeIcon}</IconButton>
+
     render = () => {
-        const style = this.getStyle();
         const repeatActiveStyle = this.getActiveColor(this.props.player.repeat);
         const shuffleActiveStyle = this.getActiveColor(this.props.player.shuffle);
         const playingIcon = this.getPlayingIcon();
         const volumeIcon = this.getVolumeIcon();
         const progress = this.getProgress();
+        const backEndPlayer = this.getBackEndPlayer();
+
         return (
-            <div className="playerbar-container" style={style}>
-                <div className="playerbar-left">
-                    <IconButton onClick={this.handlePreviousClick}><AvSkipPrevious/></IconButton>
-                    <IconButton onClick={this.handlePlayClick}>{playingIcon}</IconButton>
-                    <IconButton onClick={this.handleNextClick}><AvSkipNext/></IconButton>
+            <div className="playerbar-container">
+                <div className="playerbar-wrapper-left">
+                    <PlayerSongWidget></PlayerSongWidget> 
                 </div>
-                <div className="playerbar-center">
-                    <Slider min={0} max={100} value={progress}></Slider>
+                <div className="playerbar-wrapper">
+                    <div className="playerbar-left">
+                        <IconButton onClick={this.handlePreviousClick}><AvSkipPrevious/></IconButton>
+                        <IconButton onClick={this.handlePlayClick}>{playingIcon}</IconButton>
+                        <IconButton onClick={this.handleNextClick}><AvSkipNext/></IconButton>
+                    </div>
+                    <div className="playerbar-center">
+                        <Slider min={0} max={100} value={progress} onChange={this.handleSeek}></Slider>
+                    </div>
+                    <div className="playerbar-right">
+                        <IconButton onClick={this.handleVolumeClick.bind(this)}>{this.getVolumeIcon()}</IconButton>
+                        <Popover open={this.state.open}
+                            anchorEl={this.state.anchorEl}
+                            anchorOrigin={{horizontal: 'middle', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'middle', vertical: 'bottom'}}
+                            onRequestClose={this.handleVolumeClose}>
+                            <div className="playerbar-volume-wrapper">
+                                <div className="playerbar-volume-slider">
+                                    <Slider min={0} max={1} step={0.1} value={this.state.volume} onChange={this.handleVolume}></Slider>
+                                </div>
+                            </div>
+                        </Popover>
+                        <IconButton onClick={this.handleShuffleClick}><AvShuffle color={shuffleActiveStyle}/></IconButton>
+                        <IconButton onClick={this.handleRepeatClick}><AvRepeat color={repeatActiveStyle}/></IconButton>
+                        <IconButton onClick={this.handleQueueClick}><AvQueueMusic/></IconButton>
+                    </div>
                 </div>
-                <div className="playerbar-right">
-                    <IconButton onClick={this.handleVolumeClick}>{volumeIcon}</IconButton>
-                    <IconButton onClick={this.handleShuffleClick}><AvShuffle color={shuffleActiveStyle}/></IconButton>
-                    <IconButton onClick={this.handleRepeatClick}><AvRepeat color={repeatActiveStyle}/></IconButton>
+                <div className="playerbar-wrapper-right">
+                    <div className="playersongwidget-filler"></div>
                 </div>
+                {backEndPlayer}
             </div>
         );
     }
 };
 
-export default muiThemeable()(connect(
+export default muiThemeable()(withRouter(connect(
     (state) => {
         return state;
     }
-)(PlayerBar));
+)(PlayerBar)));

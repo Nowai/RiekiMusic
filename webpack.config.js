@@ -5,7 +5,7 @@ var path = require('path');
 const env = process.env.WEBPACK_ENV;
 
 // meta-data
-var projectName = 'muimp';
+var projectName = 'riekimusic';
 var outputFileName = env == 'build' ? projectName + '.min.js' : projectName + '.js';
 
 var config = {
@@ -52,7 +52,9 @@ var config = {
       'node_modules',
       './src',
       './src/components',
-      './src/views'
+      './src/views',
+      './src/actions',
+      './src/utils'
     ],
     alias: {
       actions: path.resolve( __dirname, 'src/actions/'),

@@ -1,0 +1,26 @@
+.view-toggle-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+    align-items: center;
+}
+
+.view-toggle-left {
+    flex-grow: 1;
+    align-self: left;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    align-content: center;
+    
+    > * {
+        margin-bottom: 0 !important;
+    }
+}
+
+.view-toggle-right {
+    flex-shrink: 0;
+    align-self: right;
+    display: flex;
+    flex-flow: row nowrap;
+}

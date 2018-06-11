@@ -1,135 +1,133 @@
-import {Howl} from 'howler';
-
 const initialState = {
-    currentIndex: 0,
-    playlist: [],
-    queueNext: [],
-    shuffledPlaylist: [],
-    shuffle: false,
-    repeat: false,
     isPlaying: false,
-    howl: null,
-    volume: 1.0
+    repeat: false,
+    shuffle: false,
+    volume: 0.5,
+    history: [],
+    currentSong: null,
+    playNext: [],
+    future: []
 };
 
 export let reducers = (state = initialState, action) => {
     switch(action.type) {
-        case 'TOGGLE_PLAY':
-            return togglePlay(state, action);
+        case 'PLAY':
+            return play(state, action);
+        case 'PAUSE':
+            return pause(state, action);
+        case 'NEXT':
+            return next(state, action);
+        case 'PREVIOUS':
+            return previous(state, action);
         case 'TOGGLE_SHUFFLE':
             return toggleShuffle(state, action);
         case 'TOGGLE_REPEAT':
-            return {...state, repeat: toggleRepeat(state.repeat, action)};
-        case 'ADD_SONGS':
+            return toggleRepeat(state, action);
+        case 'ADD_SONGS': 
             return addSongs(state, action);
         case 'SET_SONGS':
             return setSongs(state, action);
-        case 'CLEAR_SONGS':
-            return clearSongs(state, action);
-        case 'SET_INDEX': 
-            return setIndex(state, action);
-        case 'PLAY_NEXT':
-            return playNext(state, action);
-        case 'PLAY_PREVIOUS':
-            return playPrevious(state, action);
-        
+        case 'ADD_PLAYNEXT':
+            return addPlayNext(state, action);
+        case 'REMOVE_HISTORY':
+            return removeFromHistory(state, action);
+        case 'REMOVE_FUTURE':
+            return removeFromFuture(state, action);
+        case 'REMOVE_PLAYNEXT':
+            return removeFromPlayNext(state, action);
         default: 
             return state;
     }
 };
 
-let clearSongs = (state, action) => {
-    if(state.howl != null)
-        state.howl.stop();
+let play = (state, action) => {
     return Object.assign({}, state, {
-        playlist: [],
-        queueNext: [],
-        howl: null,
-        isPlaying: false
+        isPlaying: true
     });
 };
 
-let setIndex = (state, action) => {
+let pause = (state, action) => {
     return Object.assign({}, state, {
-        currentIndex: action.index
+        isPlaying: false 
     });
 };
 
-let playNext = (state, action) => {
+let next = (state, action) => {
+    let playList = Object.assign({}, {
+        history: state.history, 
+        currentSong : state.currentSong, 
+        playNext: state.playNext,
+        future: state.future
+    });
+    if(playList.currentSong != null)
+        playList.history.push(playList.currentSong);
+    playList.currentSong = playList.playNext.length > 0 ? playList.playNext.shift() : playList.future.length > 0 ? playList.future.shift() : null; // TODO: repeat!
     return Object.assign({}, state, {
-        // todo
+        ...playList
     });
 };
 
-export let playPrevious = (state = initialState, action) => {
-    return state;
+let previous = (state, action) => {
+    let playList = Object.assign({}, {
+        history: state.history, 
+        currentSong : state.currentSong, 
+        playNext: state.playNext,
+        future: state.future
+    });
+    if(playList.currentSong != null)
+        playList.future.unshift(playList.currentSong);
+    playList.currentSong = playList.history.length > 0 ? playList.history.pop() : null;
+    return Object.assign({}, state, {
+        ...playList
+    });
 };
 
-export let addQueueNext = (state, action ) => {
-    return state;
+let toggleShuffle = (state, action) => {
+    return Object.assign({}, state, {
+        shuffle: !state.shuffle
+    });
+};
+
+let toggleRepeat = (state, action) => {
+    return Object.assign({}, state, {
+        repeat: !state.repeat
+    });
 };
 
 let addSongs = (state, action) => {
     return Object.assign({}, state, {
-        playlist: action.songs
+        future: state.future.concat(action.songs)
     });
 };
 
 let setSongs = (state, action) => {
-    let newState = {...state};
-    newState.playlist = action.songs;
-    newState.currentIndex = action.startIndex;
-    newState = startPlay(newState,action);
-    return newState;
     return Object.assign({}, state, {
-        playlist: action
+        history: action.index > 0 ? action.songs.slice(0,action.index) : [],
+        currentSong: action.songs[action.index],
+        future: action.songs.slice(action.index+1)
+    })
+}
+
+let addPlayNext = (state, action) => {
+    return Object.assign({}, state, {
+        playNext: state.playNext.concat(action.songs)
+    });
+};
+
+let removeFromHistory = (state, action) => {
+    return Object.assign({}, state, {
+        history: state.history.filter((v,i) => i!=action.index)
     });
 }
 
-let startPlay = (state, action) => {
-    let newState = {...state};
-    if(state.howl != null) {
-        state.howl.stop();
-    }
-    newState.howl = new Howl({
-        src: ['http://localhost:8080/songs/file/' + state.playlist[state.currentIndex].songId],
-        autoplay: true,
-        volume: state.volume,
-        onend: () => { action.dispatch({type: 'TOGGLE_PLAY'}); },
-        format: ['mp3']
-    });
-    newState.howl.play();
-    newState.isPlaying = true;
-    // TODO: ADD SHUFFLE
-    return newState;
+let removeFromPlayNext = (state, action) => {
+    return Object.assign({}, state, {
+        playNext: state.playNext.filter((v,i) => i!=action.index)
+    })
 }
 
-let togglePlay = (state, action) => {
-    if(state.isPlaying) {
-        state.howl.pause();
-        return Object.assign({}, state, {
-            isPlaying: false
-        });
-    }
-    else {
-        if(state.howl == null) {
-            return startPlay(state, action);
-        }
-        else {
-            state.howl.play();
-            return Object.assign({}, state, {
-                isPlaying: true
-            });
-        }
-    }
+let removeFromFuture = (state, action) => {
+    return Object.assign({}, state, {
+        future: state.future.filter((v,i) => i!=action.index)
+    })
 }
-
-let toggleShuffle = (state=false, action) => {
-    let nextState = {...state};
-    return {...state, shuffle: !state.shuffle};
-};
-
-let toggleRepeat = (state=false, action) => {
-    return !state;
-};
-

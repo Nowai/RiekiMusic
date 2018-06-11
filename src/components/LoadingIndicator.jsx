@@ -3,6 +3,9 @@ import React from 'react';
 // mui
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 
+// colors
+import {colors} from 'components/Colors';
+
 export class LoadingIndicator extends React.Component {
     constructor(props) {
         super(props);
@@ -17,6 +20,7 @@ export class LoadingIndicator extends React.Component {
                     size={40}
                     status="loading"
                     style={{position:'relative', display:'inline-block'}}
+                    loadingColor={colors.palette.accent1Color}
                 ></RefreshIndicator></div>);
         }
         else 
